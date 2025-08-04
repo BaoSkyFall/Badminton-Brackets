@@ -372,7 +372,11 @@ const DoubleEliminationBracket = () => {
   };
 
   const MatchBox = ({ match, bracket, round, size = 'normal' }: { match: any, bracket: string, round: string, size?: string }) => {
-    const boxWidth = size === 'large' ? 'w-64' : size === 'small' ? 'w-48' : 'w-56';
+    const boxWidth = size === 'large' 
+      ? 'w-full max-w-xs sm:w-64' 
+      : size === 'small' 
+      ? 'w-full max-w-44 sm:w-48' 
+      : 'w-full max-w-52 sm:w-56';
     
     return (
       <div className={`${boxWidth} bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-xl border-2 border-[#0050fa]/20 overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300 hover:scale-105`}>
@@ -437,7 +441,7 @@ const DoubleEliminationBracket = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-2 md:p-4 lg:p-6 relative overflow-hidden">
       {/* Sporty background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-20 w-32 h-32 rounded-full border-4 border-white animate-pulse"></div>
@@ -447,13 +451,13 @@ const DoubleEliminationBracket = () => {
       </div>
       <div className="relative z-10">
       {/* Header */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="bg-gradient-to-r from-white via-blue-50 to-white rounded-xl shadow-2xl p-6 border-2 border-[#0050fa]/20">
-          <div className="flex flex-col gap-4 items-center justify-between mb-6">
+      <div className="max-w-7xl mx-auto mb-4 md:mb-6">
+        <div className="bg-gradient-to-r from-white via-blue-50 to-white rounded-xl shadow-2xl p-4 md:p-6 border-2 border-[#0050fa]/20">
+          <div className="flex flex-col gap-4 items-center justify-between mb-4 md:mb-6">
             <div className="flex flex-col gap-6 items-center space-x-4">
-              <img src="/logo.png" alt="Tournament Logo" className="w-48" />
+              <img src="/logo.png" alt="Tournament Logo" className="w-32 md:w-40 lg:w-48" />
               <div className="flex flex-col items-center space-y-3">
-                <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0050fa] to-[#003bb8] uppercase tracking-tight text-center">GIẢI ĐẤU CẦU LÔNG - VP HỒ CHÍ MINH</h1>
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0050fa] to-[#003bb8] uppercase tracking-tight text-center">GIẢI ĐẤU CẦU LÔNG - VP HỒ CHÍ MINH</h1>
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <div className="flex items-center space-x-2 bg-gradient-to-r from-[#0050fa] to-[#003bb8] px-4 py-2 rounded-full shadow-lg">
                     <Users className="w-4 h-4 text-white" />
@@ -471,10 +475,10 @@ const DoubleEliminationBracket = () => {
                 </div>
               </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
               <button
                 onClick={initializeBracket}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#0050fa] to-[#003bb8] text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20"
+                className="flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-[#0050fa] to-[#003bb8] text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20 text-sm md:text-base"
               >
                 <Play className="w-4 h-4" />
                 <span>Bắt đầu</span>
@@ -482,7 +486,7 @@ const DoubleEliminationBracket = () => {
               <button
                 onClick={advanceWinners}
                 disabled={!canAdvance()}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-full transition-all duration-300 font-bold uppercase tracking-wide border-2 ${
+                className={`flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 rounded-full transition-all duration-300 font-bold uppercase tracking-wide border-2 text-sm md:text-base ${
                   canAdvance() 
                     ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg hover:scale-105 border-white/20' 
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400'
@@ -492,14 +496,14 @@ const DoubleEliminationBracket = () => {
               </button>
               <button
                 onClick={resetBracket}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20"
+                className="flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20 text-sm md:text-base"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Reset</span>
               </button>
               <button
                 onClick={() => setShowRulesModal(true)}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20"
+                className="flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20 text-sm md:text-base"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Thể lệ</span>
@@ -508,7 +512,7 @@ const DoubleEliminationBracket = () => {
           </div>
 
           {/* Player names editor */}
-          <div className="grid grid-cols-5 gap-3 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 mb-4">
             {players.map((player, index) => (
               <input
                 key={index}
@@ -527,7 +531,7 @@ const DoubleEliminationBracket = () => {
 
           {/* Champions display */}
           {champion && (
-            <div className="flex justify-center space-x-6 mb-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mb-4">
               <div className="text-center">
                 <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
                 <div className="bg-yellow-100 px-4 py-2 rounded-lg">
@@ -561,14 +565,14 @@ const DoubleEliminationBracket = () => {
       {/* Tournament Bracket */}
       <div className="max-w-7xl mx-auto">
         {/* Winners Bracket */}
-        <div className="bg-gradient-to-r from-white via-green-50 to-white rounded-xl shadow-2xl p-6 mb-6 border-2 border-green-200">
-          <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-700 mb-6 text-center uppercase tracking-wide">🏆 NHÁNH THẮNG</h2>
+        <div className="bg-gradient-to-r from-white via-green-50 to-white rounded-xl shadow-2xl p-4 md:p-6 mb-4 md:mb-6 border-2 border-green-200">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-700 mb-4 md:mb-6 text-center uppercase tracking-wide">🏆 NHÁNH THẮNG</h2>
           
-          <div className="flex justify-between items-center space-x-6 min-h-[600px]">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:space-x-6 gap-6 lg:gap-0 lg:min-h-[600px]">
             {/* Round 1 */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Vòng 1</h3>
-              <div className="flex-1 flex flex-col justify-center space-y-4">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">Vòng 1</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center space-y-3 md:space-y-4">
                 {winnersBracket.round1.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="winners" round="round1" />
@@ -578,9 +582,9 @@ const DoubleEliminationBracket = () => {
             </div>
 
             {/* Semifinals */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Bán kết</h3>
-              <div className="flex-1 flex flex-col justify-center space-y-16">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">Bán kết</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center space-y-8 lg:space-y-16">
                 {winnersBracket.semifinals.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="winners" round="semifinals" />
@@ -590,9 +594,9 @@ const DoubleEliminationBracket = () => {
             </div>
 
             {/* Winners Finals */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Chung kết nhánh thắng</h3>
-              <div className="flex-1 flex flex-col justify-center">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">Chung kết nhánh thắng</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center">
                 {winnersBracket.finals.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="winners" round="finals" size="large" />
@@ -604,14 +608,14 @@ const DoubleEliminationBracket = () => {
         </div>
 
         {/* Losers Bracket */}
-        <div className="bg-gradient-to-r from-white via-red-50 to-white rounded-xl shadow-2xl p-6 mb-6 border-2 border-red-200">
-          <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700 mb-6 text-center uppercase tracking-wide">💔 NHÁNH THUA</h2>
+        <div className="bg-gradient-to-r from-white via-red-50 to-white rounded-xl shadow-2xl p-4 md:p-6 mb-4 md:mb-6 border-2 border-red-200">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700 mb-4 md:mb-6 text-center uppercase tracking-wide">💔 NHÁNH THUA</h2>
           
-          <div className="flex justify-between items-center space-x-8 min-h-[400px]">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:space-x-8 gap-6 lg:gap-0 lg:min-h-[400px]">
             {/* Losers Round 1 */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">LR1</h3>
-              <div className="flex-1 flex flex-col justify-center space-y-12">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">LR1</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center space-y-6 lg:space-y-12">
                 {losersBracket.round1.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="round1" size="small" />
@@ -621,9 +625,9 @@ const DoubleEliminationBracket = () => {
             </div>
 
             {/* Losers Round 2 */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">LR2</h3>
-              <div className="flex-1 flex flex-col justify-center space-y-12">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">LR2</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center space-y-6 lg:space-y-12">
                 {losersBracket.round2.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="round2" size="small" />
@@ -633,9 +637,9 @@ const DoubleEliminationBracket = () => {
             </div>
 
             {/* Losers Round 3 */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">LR3</h3>
-              <div className="flex-1 flex flex-col justify-center">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">LR3</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center">
                 {losersBracket.round3.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="round3" />
@@ -645,9 +649,9 @@ const DoubleEliminationBracket = () => {
             </div>
 
             {/* Losers Finals */}
-            <div className="flex-1 flex flex-col h-full">
-              <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Chung kết nhánh thua</h3>
-              <div className="flex-1 flex flex-col justify-center">
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">Chung kết nhánh thua</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center">
                 {losersBracket.finals.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="finals" />
@@ -659,10 +663,10 @@ const DoubleEliminationBracket = () => {
         </div>
 
         {/* Grand Finals */}
-        <div className="bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-200 rounded-xl shadow-2xl p-6 border-4 border-yellow-300 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-200 rounded-xl shadow-2xl p-4 md:p-6 border-4 border-yellow-300 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/20 to-transparent animate-pulse"></div>
           <div className="relative z-10">
-          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-700 to-yellow-900 mb-6 text-center uppercase tracking-wider animate-pulse">👑 CHUNG KẾT</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-700 to-yellow-900 mb-4 md:mb-6 text-center uppercase tracking-wider animate-pulse">👑 CHUNG KẾT</h2>
           <div className="flex justify-center">
             {grandFinals.map((match) => (
               <MatchBox key={match.id} match={match} bracket="grand" round="finals" size="large" />
@@ -675,12 +679,12 @@ const DoubleEliminationBracket = () => {
 
       {/* Tournament Rules Modal */}
       {showRulesModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 md:p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-2 md:mx-4">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 md:p-6 rounded-t-xl">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold flex items-center">
-                  <BookOpen className="w-6 h-6 mr-3" />
+                <h2 className="text-lg md:text-2xl font-bold flex items-center">
+                  <BookOpen className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3" />
                   THỂ LỆ THI ĐẤU CẦU LÔNG
                 </h2>
                 <button
@@ -692,7 +696,7 @@ const DoubleEliminationBracket = () => {
               </div>
             </div>
             
-            <div className="p-6 space-y-6 text-gray-800">
+            <div className="p-4 md:p-6 space-y-4 md:space-y-6 text-gray-800">
               <section>
                 <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
                   1. QUY ĐỊNH CHUNG
