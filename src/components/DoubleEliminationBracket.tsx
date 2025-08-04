@@ -65,11 +65,10 @@ const DoubleEliminationBracket = () => {
       return true;
     }
     
-    // Step 3: LR1 completed, LR2 has empty slots (allow advancement)
+    // Step 3: LR1 completed, LR2 has empty slots (allow advancement for better UX)
     if (losersBracket.round1.every(m => m.completed) && 
-        losersBracket.round2.some(m => !m.player1 || !m.player2) &&
-        (winnersBracket.semifinals.every(m => m.completed) || winnersBracket.finals[0].completed)) {
-      return true; // Allow advancing losers bracket when winners semifinals or finals are done
+        losersBracket.round2.some(m => !m.player1 || !m.player2)) {
+      return true; // Allow advancing LR1 immediately for better UX
     }
     
     // Step 4: LR2 completed, LR3 empty
@@ -218,6 +217,30 @@ const DoubleEliminationBracket = () => {
             ...newLosersBracket.round2[1],
             player1: lr1Winners[1],
             player2: semifinalLosers[1],
+          };
+        }
+      }
+    }
+    
+    // Step 2a: LR1 completed but semifinals not yet completed - advance LR1 winners only  
+    else if (losersBracket.round1.every(m => m.completed) && 
+             losersBracket.round2.every(m => !m.player1 && !m.player2) &&
+             !winnersBracket.semifinals.every(m => m.completed)) {
+      
+      const lr1Winners = losersBracket.round1.filter(m => m.winner).map(m => m.winner);
+      
+      // Place LR1 winners in LR2, leave opponent slots empty for later  
+      if (lr1Winners.length >= 2) {
+        newLosersBracket.round2[0] = {
+          ...newLosersBracket.round2[0],
+          player1: lr1Winners[0],
+          player2: '', // Will be filled by semifinal loser later
+        };
+        if (lr1Winners[1]) {
+          newLosersBracket.round2[1] = {
+            ...newLosersBracket.round2[1],
+            player1: lr1Winners[1], 
+            player2: '', // Will be filled by semifinal loser later
           };
         }
       }
