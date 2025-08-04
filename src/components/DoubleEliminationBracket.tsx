@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RotateCcw, Play, Users, Crown, Medal, Award } from 'lucide-react';
+import { RotateCcw, Play, Users, Crown, Medal, Award, BookOpen, X } from 'lucide-react';
 
 const DoubleEliminationBracket = () => {
   const [players, setPlayers] = useState([
@@ -48,6 +48,7 @@ const DoubleEliminationBracket = () => {
   const [champion, setChampion] = useState<string | null>(null);
   const [runnerUp, setRunnerUp] = useState<string | null>(null);
   const [thirdPlace, setThirdPlace] = useState<string | null>(null);
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
   // Kiểm tra xem có thể tiến vòng không
   const canAdvance = () => {
@@ -444,6 +445,13 @@ const DoubleEliminationBracket = () => {
                 <RotateCcw className="w-4 h-4" />
                 <span>Reset</span>
               </button>
+              <button
+                onClick={() => setShowRulesModal(true)}
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Thể lệ</span>
+              </button>
             </div>
           </div>
 
@@ -612,6 +620,144 @@ const DoubleEliminationBracket = () => {
         </div>
       </div>
       </div>
+
+      {/* Tournament Rules Modal */}
+      {showRulesModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold flex items-center">
+                  <BookOpen className="w-6 h-6 mr-3" />
+                  THỂ LỆ THI ĐẤU CẦU LÔNG
+                </h2>
+                <button
+                  onClick={() => setShowRulesModal(false)}
+                  className="text-white hover:text-gray-200 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 space-y-6 text-gray-800">
+              <section>
+                <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
+                  1. QUY ĐỊNH CHUNG
+                </h3>
+                <ul className="space-y-2 text-sm leading-relaxed">
+                  <li>• Giải đấu áp dụng thể thức <strong>Double Elimination</strong> (Loại trực tiếp kép)</li>
+                  <li>• Tổng cộng có <strong>10 người chơi</strong> tham gia thi đấu</li>
+                  <li>• Mỗi người chơi được phép thua <strong>tối đa 1 trận</strong> trước khi bị loại</li>
+                  <li>• Giải đấu được chia thành 2 nhánh: <strong>Nhánh thắng</strong> và <strong>Nhánh thua</strong></li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
+                  2. CẤU TRÚC GIẢI ĐẤU
+                </h3>
+                <div className="space-y-4 text-sm leading-relaxed">
+                  <div>
+                    <h4 className="font-semibold text-green-700 mb-2">📈 Nhánh Thắng (Winners Bracket):</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• <strong>Vòng 1:</strong> 10 người → 5 trận → 5 người thắng</li>
+                      <li>• <strong>Bán kết:</strong> 5 người → 2 trận → 2 người thắng (1 người bye)</li>
+                      <li>• <strong>Chung kết nhánh thắng:</strong> 2 người → 1 người vô địch nhánh</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-red-700 mb-2">📉 Nhánh Thua (Losers Bracket):</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• <strong>Vòng LR1:</strong> 5 người thua vòng 1 nhánh thắng → 2 trận → 2 người thắng</li>
+                      <li>• <strong>Vòng LR2:</strong> 2 người thắng LR1 + 2 người thua bán kết → 2 trận → 2 người thắng</li>
+                      <li>• <strong>Vòng LR3:</strong> 2 người thắng LR2 → 1 trận → 1 người thắng</li>
+                      <li>• <strong>Chung kết nhánh thua:</strong> 1 người thắng LR3 + 1 người thua chung kết nhánh thắng → 1 người vô địch nhánh</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
+                  3. CHUNG KẾT TỔNG
+                </h3>
+                <ul className="space-y-2 text-sm leading-relaxed">
+                  <li>• Vô địch nhánh thắng gặp vô địch nhánh thua</li>
+                  <li>• Nếu vô địch nhánh thắng thắng: <strong>Giải kết thúc</strong></li>
+                  <li>• Nếu vô địch nhánh thua thắng: Thi đấu thêm <strong>1 trận nữa</strong> (Reset Bracket)</li>
+                  <li>• Người thắng trận cuối cùng là <strong>🏆 Vô địch</strong></li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
+                  4. QUY ĐỊNH TRẬN ĐẤU
+                </h3>
+                <ul className="space-y-2 text-sm leading-relaxed">
+                  <li>• Mỗi trận đấu thi đấu <strong>1 set duy nhất</strong> đến <strong>21 điểm</strong></li>
+                  <li>• Phải thắng cách biệt <strong>tối thiểu 2 điểm</strong></li>
+                  <li>• Nếu hòa 20-20, thi đấu đến khi có người thắng cách biệt 2 điểm</li>
+                  <li>• Nếu hòa 29-29, người đạt 30 điểm trước sẽ thắng</li>
+                  <li>• Nghỉ giữa hiệp khi một bên đạt <strong>11 điểm</strong></li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
+                  5. GIẢI THƯỞNG
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                  <div className="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-300">
+                    <Crown className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
+                    <h4 className="font-bold text-yellow-700">🏆 VÀNG</h4>
+                    <p className="text-sm">Vô địch giải đấu</p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300">
+                    <Medal className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                    <h4 className="font-bold text-gray-700">🥈 BẠC</h4>
+                    <p className="text-sm">Á quân giải đấu</p>
+                  </div>
+                  <div className="bg-orange-50 p-4 rounded-lg border-2 border-orange-300">
+                    <Award className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+                    <h4 className="font-bold text-orange-700">🥉 ĐỒNG</h4>
+                    <p className="text-sm">Hạng ba giải đấu</p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
+                  6. QUY ĐỊNH KHÁC
+                </h3>
+                <ul className="space-y-2 text-sm leading-relaxed">
+                  <li>• Người chơi phải có mặt <strong>đúng giờ</strong> khi được gọi thi đấu</li>
+                  <li>• Nghỉ tối đa <strong>5 phút</strong> giữa các trận đấu</li>
+                  <li>• Mọi tranh chấp sẽ được <strong>trọng tài</strong> quyết định</li>
+                  <li>• Người chơi phải thể hiện tinh thần <strong>fair play</strong> và tôn trọng đối thủ</li>
+                  <li>• Cấm sử dụng <strong>thuốc kích thích</strong> hoặc chất cấm</li>
+                </ul>
+              </section>
+
+              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                <p className="text-sm text-blue-800">
+                  <strong>Lưu ý:</strong> Ban tổ chức có quyền thay đổi thể lệ nếu cần thiết để đảm bảo tính công bằng và hấp dẫn của giải đấu.
+                </p>
+              </div>
+            </div>
+            
+            <div className="sticky bottom-0 bg-gray-50 p-4 rounded-b-xl border-t">
+              <button
+                onClick={() => setShowRulesModal(false)}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
