@@ -717,7 +717,7 @@ const DoubleEliminationBracket = () => {
           onClick={closeRulesModal}
         >
           <div 
-            className={`bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-2 md:mx-4 transition-all duration-500 ease-out transform ${
+            className={`bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] mx-2 md:mx-4 transition-all duration-500 ease-out transform flex flex-col ${
               rulesModalAnimating 
                 ? 'scale-100 opacity-100 translate-y-0 rotate-0' 
                 : 'scale-90 opacity-0 translate-y-8 -rotate-1'
@@ -727,7 +727,7 @@ const DoubleEliminationBracket = () => {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 md:p-6 rounded-t-xl transition-all duration-700 ${
+            <div className={`bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 md:p-6 rounded-t-xl transition-all duration-700 flex-shrink-0 ${
               rulesModalAnimating ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="flex justify-between items-center">
@@ -744,7 +744,7 @@ const DoubleEliminationBracket = () => {
               </div>
             </div>
             
-            <div className={`p-4 md:p-6 space-y-4 md:space-y-6 text-gray-800 transition-all duration-700 delay-200 ${
+            <div className={`p-4 md:p-6 space-y-4 md:space-y-6 text-gray-800 transition-all duration-700 delay-200 overflow-y-auto flex-1 ${
               rulesModalAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
               <section>
@@ -853,7 +853,7 @@ const DoubleEliminationBracket = () => {
               </div>
             </div>
             
-            <div className="sticky bottom-0 bg-gray-50 p-4 rounded-b-xl border-t">
+            <div className="bg-gray-50 p-4 rounded-b-xl border-t flex-shrink-0">
               <button
                 onClick={closeRulesModal}
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold"
