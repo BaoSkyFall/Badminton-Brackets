@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Trophy, RotateCcw, Play, Users, Crown, Medal, Award } from 'lucide-react';
+import { useState } from 'react';
+import { RotateCcw, Play, Users, Crown, Medal, Award } from 'lucide-react';
 
 const DoubleEliminationBracket = () => {
   const [players, setPlayers] = useState([
@@ -9,45 +9,45 @@ const DoubleEliminationBracket = () => {
 
   const [winnersBracket, setWinnersBracket] = useState({
     round1: [
-      { id: 'W1-1', player1: '', player2: '', winner: null, completed: false },
-      { id: 'W1-2', player1: '', player2: '', winner: null, completed: false },
-      { id: 'W1-3', player1: '', player2: '', winner: null, completed: false },
-      { id: 'W1-4', player1: '', player2: '', winner: null, completed: false },
-      { id: 'W1-5', player1: '', player2: '', winner: null, completed: false }
+      { id: 'W1-1', player1: '', player2: '', winner: '', completed: false },
+      { id: 'W1-2', player1: '', player2: '', winner: '', completed: false },
+      { id: 'W1-3', player1: '', player2: '', winner: '', completed: false },
+      { id: 'W1-4', player1: '', player2: '', winner: '', completed: false },
+      { id: 'W1-5', player1: '', player2: '', winner: '', completed: false }
     ],
     semifinals: [
-      { id: 'WS-1', player1: '', player2: '', winner: null, completed: false },
-      { id: 'WS-2', player1: '', player2: '', winner: null, completed: false }
+      { id: 'WS-1', player1: '', player2: '', winner: '', completed: false },
+      { id: 'WS-2', player1: '', player2: '', winner: '', completed: false }
     ],
     finals: [
-      { id: 'WF', player1: '', player2: '', winner: null, completed: false }
+      { id: 'WF', player1: '', player2: '', winner: '', completed: false }
     ]
   });
 
   const [losersBracket, setLosersBracket] = useState({
     round1: [
-      { id: 'L1-1', player1: '', player2: '', winner: null, completed: false },
-      { id: 'L1-2', player1: '', player2: '', winner: null, completed: false }
+      { id: 'L1-1', player1: '', player2: '', winner: '', completed: false },
+      { id: 'L1-2', player1: '', player2: '', winner: '', completed: false }
     ],
     round2: [
-      { id: 'L2-1', player1: '', player2: '', winner: null, completed: false },
-      { id: 'L2-2', player1: '', player2: '', winner: null, completed: false }
+      { id: 'L2-1', player1: '', player2: '', winner: '', completed: false },
+      { id: 'L2-2', player1: '', player2: '', winner: '', completed: false }
     ],
     round3: [
-      { id: 'L3-1', player1: '', player2: '', winner: null, completed: false }
+      { id: 'L3-1', player1: '', player2: '', winner: '', completed: false }
     ],
     finals: [
-      { id: 'LF', player1: '', player2: '', winner: null, completed: false }
+      { id: 'LF', player1: '', player2: '', winner: '', completed: false }
     ]
   });
 
   const [grandFinals, setGrandFinals] = useState([
-    { id: 'GF', player1: '', player2: '', winner: null, completed: false }
+    { id: 'GF', player1: '', player2: '', winner: '', completed: false }
   ]);
 
-  const [champion, setChampion] = useState(null);
-  const [runnerUp, setRunnerUp] = useState(null);
-  const [thirdPlace, setThirdPlace] = useState(null);
+  const [champion, setChampion] = useState<string | null>(null);
+  const [runnerUp, setRunnerUp] = useState<string | null>(null);
+  const [thirdPlace, setThirdPlace] = useState<string | null>(null);
 
   // Kiểm tra xem có thể tiến vòng không
   const canAdvance = () => {
@@ -102,7 +102,7 @@ const DoubleEliminationBracket = () => {
         ...newWinnersBracket.round1[i],
         player1: shuffledPlayers[i * 2],
         player2: shuffledPlayers[i * 2 + 1],
-        winner: null,
+        winner: '',
         completed: false
       };
     }
@@ -110,18 +110,18 @@ const DoubleEliminationBracket = () => {
     setWinnersBracket(newWinnersBracket);
   };
 
-  const updateMatch = (bracket, round, matchId, winner) => {
+  const updateMatch = (bracket: string, round: string, matchId: string, winner: string) => {
     if (bracket === 'winners') {
       setWinnersBracket(prev => ({
         ...prev,
-        [round]: prev[round].map(match => 
+        [round]: (prev as any)[round].map((match: any) => 
           match.id === matchId ? { ...match, winner, completed: true } : match
         )
       }));
     } else if (bracket === 'losers') {
       setLosersBracket(prev => ({
         ...prev,
-        [round]: prev[round].map(match => 
+        [round]: (prev as any)[round].map((match: any) => 
           match.id === matchId ? { ...match, winner, completed: true } : match
         )
       }));
@@ -276,40 +276,40 @@ const DoubleEliminationBracket = () => {
   const resetBracket = () => {
     setWinnersBracket({
       round1: [
-        { id: 'W1-1', player1: '', player2: '', winner: null, completed: false },
-        { id: 'W1-2', player1: '', player2: '', winner: null, completed: false },
-        { id: 'W1-3', player1: '', player2: '', winner: null, completed: false },
-        { id: 'W1-4', player1: '', player2: '', winner: null, completed: false },
-        { id: 'W1-5', player1: '', player2: '', winner: null, completed: false }
+        { id: 'W1-1', player1: '', player2: '', winner: '', completed: false },
+        { id: 'W1-2', player1: '', player2: '', winner: '', completed: false },
+        { id: 'W1-3', player1: '', player2: '', winner: '', completed: false },
+        { id: 'W1-4', player1: '', player2: '', winner: '', completed: false },
+        { id: 'W1-5', player1: '', player2: '', winner: '', completed: false }
       ],
       semifinals: [
-        { id: 'WS-1', player1: '', player2: '', winner: null, completed: false },
-        { id: 'WS-2', player1: '', player2: '', winner: null, completed: false }
+        { id: 'WS-1', player1: '', player2: '', winner: '', completed: false },
+        { id: 'WS-2', player1: '', player2: '', winner: '', completed: false }
       ],
       finals: [
-        { id: 'WF', player1: '', player2: '', winner: null, completed: false }
+        { id: 'WF', player1: '', player2: '', winner: '', completed: false }
       ]
     });
 
     setLosersBracket({
       round1: [
-        { id: 'L1-1', player1: '', player2: '', winner: null, completed: false },
-        { id: 'L1-2', player1: '', player2: '', winner: null, completed: false }
+        { id: 'L1-1', player1: '', player2: '', winner: '', completed: false },
+        { id: 'L1-2', player1: '', player2: '', winner: '', completed: false }
       ],
       round2: [
-        { id: 'L2-1', player1: '', player2: '', winner: null, completed: false },
-        { id: 'L2-2', player1: '', player2: '', winner: null, completed: false }
+        { id: 'L2-1', player1: '', player2: '', winner: '', completed: false },
+        { id: 'L2-2', player1: '', player2: '', winner: '', completed: false }
       ],
       round3: [
-        { id: 'L3-1', player1: '', player2: '', winner: null, completed: false }
+        { id: 'L3-1', player1: '', player2: '', winner: '', completed: false }
       ],
       finals: [
-        { id: 'LF', player1: '', player2: '', winner: null, completed: false }
+        { id: 'LF', player1: '', player2: '', winner: '', completed: false }
       ]
     });
 
     setGrandFinals([
-      { id: 'GF', player1: '', player2: '', winner: null, completed: false }
+      { id: 'GF', player1: '', player2: '', winner: '', completed: false }
     ]);
 
     setChampion(null);
@@ -317,7 +317,7 @@ const DoubleEliminationBracket = () => {
     setThirdPlace(null);
   };
 
-  const MatchBox = ({ match, bracket, round, size = 'normal' }) => {
+  const MatchBox = ({ match, bracket, round, size = 'normal' }: { match: any, bracket: string, round: string, size?: string }) => {
     const boxWidth = size === 'large' ? 'w-64' : size === 'small' ? 'w-48' : 'w-56';
     
     return (
@@ -508,7 +508,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Vòng 1</h3>
               <div className="flex-1 flex flex-col justify-center space-y-4">
-                {winnersBracket.round1.map((match, index) => (
+                {winnersBracket.round1.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="winners" round="round1" />
                   </div>
@@ -520,7 +520,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Bán kết</h3>
               <div className="flex-1 flex flex-col justify-center space-y-16">
-                {winnersBracket.semifinals.map((match, index) => (
+                {winnersBracket.semifinals.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="winners" round="semifinals" />
                   </div>
@@ -532,7 +532,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Chung kết nhánh thắng</h3>
               <div className="flex-1 flex flex-col justify-center">
-                {winnersBracket.finals.map((match, index) => (
+                {winnersBracket.finals.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="winners" round="finals" size="large" />
                   </div>
@@ -551,7 +551,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">LR1</h3>
               <div className="flex-1 flex flex-col justify-center space-y-12">
-                {losersBracket.round1.map((match, index) => (
+                {losersBracket.round1.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="round1" size="small" />
                   </div>
@@ -563,7 +563,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">LR2</h3>
               <div className="flex-1 flex flex-col justify-center space-y-12">
-                {losersBracket.round2.map((match, index) => (
+                {losersBracket.round2.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="round2" size="small" />
                   </div>
@@ -575,7 +575,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">LR3</h3>
               <div className="flex-1 flex flex-col justify-center">
-                {losersBracket.round3.map((match, index) => (
+                {losersBracket.round3.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="round3" />
                   </div>
@@ -587,7 +587,7 @@ const DoubleEliminationBracket = () => {
             <div className="flex-1 flex flex-col h-full">
               <h3 className="text-lg font-bold text-gray-700 mb-4 text-center">Chung kết nhánh thua</h3>
               <div className="flex-1 flex flex-col justify-center">
-                {losersBracket.finals.map((match, index) => (
+                {losersBracket.finals.map((match) => (
                   <div key={match.id} className="flex justify-center">
                     <MatchBox match={match} bracket="losers" round="finals" />
                   </div>
@@ -603,7 +603,7 @@ const DoubleEliminationBracket = () => {
           <div className="relative z-10">
           <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-700 to-yellow-900 mb-6 text-center uppercase tracking-wider animate-pulse">👑 CHUNG KẾT</h2>
           <div className="flex justify-center">
-            {grandFinals.map((match, index) => (
+            {grandFinals.map((match) => (
               <MatchBox key={match.id} match={match} bracket="grand" round="finals" size="large" />
             ))}
           </div>
