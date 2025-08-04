@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RotateCcw, Play, Users, Crown, Medal, Award, BookOpen, X } from 'lucide-react';
 
 const DoubleEliminationBracket = () => {
@@ -49,6 +49,33 @@ const DoubleEliminationBracket = () => {
   const [runnerUp, setRunnerUp] = useState<string | null>(null);
   const [thirdPlace, setThirdPlace] = useState<string | null>(null);
   const [showRulesModal, setShowRulesModal] = useState(false);
+  const [rulesModalAnimating, setRulesModalAnimating] = useState(false);
+  
+  // Local storage key for tracking if user has read rules
+  const RULES_READ_KEY = 'badminton-tournament-rules-read';
+  
+  // Check if user has read rules on component mount
+  useEffect(() => {
+    const hasReadRules = localStorage.getItem(RULES_READ_KEY);
+    if (!hasReadRules) {
+      // Small delay for smooth initial load, then show modal with animation
+      setTimeout(() => {
+        setShowRulesModal(true);
+        // Start animation after modal is mounted
+        setTimeout(() => setRulesModalAnimating(true), 50);
+      }, 1000);
+    }
+  }, []);
+
+  // Handle closing rules modal and mark as read
+  const closeRulesModal = () => {
+    setRulesModalAnimating(false);
+    setTimeout(() => {
+      setShowRulesModal(false);
+      // Save to local storage that user has read the rules
+      localStorage.setItem(RULES_READ_KEY, 'true');
+    }, 500); // Match the animation duration
+  };
 
   // Kiểm tra xem có thể tiến vòng không
   const canAdvance = () => {
@@ -502,7 +529,11 @@ const DoubleEliminationBracket = () => {
                 <span>Reset</span>
               </button>
               <button
-                onClick={() => setShowRulesModal(true)}
+                onClick={() => {
+                  setShowRulesModal(true);
+                  // Start animation after modal is mounted
+                  setTimeout(() => setRulesModalAnimating(true), 50);
+                }}
                 className="flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-white/20 text-sm md:text-base"
               >
                 <BookOpen className="w-4 h-4" />
@@ -679,16 +710,33 @@ const DoubleEliminationBracket = () => {
 
       {/* Tournament Rules Modal */}
       {showRulesModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 md:p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-2 md:mx-4">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 md:p-6 rounded-t-xl">
+        <div 
+          className={`fixed inset-0 bg-black flex items-center justify-center z-50 p-2 md:p-4 transition-all duration-500 ease-out ${
+            rulesModalAnimating ? 'bg-opacity-50' : 'bg-opacity-0'
+          }`}
+          onClick={closeRulesModal}
+        >
+          <div 
+            className={`bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-2 md:mx-4 transition-all duration-500 ease-out transform ${
+              rulesModalAnimating 
+                ? 'scale-100 opacity-100 translate-y-0 rotate-0' 
+                : 'scale-90 opacity-0 translate-y-8 -rotate-1'
+            }`}
+            style={{
+              animationDelay: rulesModalAnimating ? '0.1s' : '0s'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 md:p-6 rounded-t-xl transition-all duration-700 ${
+              rulesModalAnimating ? 'opacity-100' : 'opacity-0'
+            }`}>
               <div className="flex justify-between items-center">
                 <h2 className="text-lg md:text-2xl font-bold flex items-center">
                   <BookOpen className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3" />
                   THỂ LỆ THI ĐẤU CẦU LÔNG
                 </h2>
                 <button
-                  onClick={() => setShowRulesModal(false)}
+                  onClick={closeRulesModal}
                   className="text-white hover:text-gray-200 transition-colors"
                 >
                   <X className="w-6 h-6" />
@@ -696,7 +744,9 @@ const DoubleEliminationBracket = () => {
               </div>
             </div>
             
-            <div className="p-4 md:p-6 space-y-4 md:space-y-6 text-gray-800">
+            <div className={`p-4 md:p-6 space-y-4 md:space-y-6 text-gray-800 transition-all duration-700 delay-200 ${
+              rulesModalAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}>
               <section>
                 <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-200 pb-2">
                   1. QUY ĐỊNH CHUNG
@@ -792,7 +842,7 @@ const DoubleEliminationBracket = () => {
                   <li>• Nghỉ tối đa <strong>5 phút</strong> giữa các trận đấu</li>
                   <li>• Mọi tranh chấp sẽ được <strong>trọng tài</strong> quyết định</li>
                   <li>• Người chơi phải thể hiện tinh thần <strong>fair play</strong> và tôn trọng đối thủ</li>
-                  <li>• Cấm sử dụng <strong>thuốc kích thích</strong> hoặc chất cấm</li>
+                  <li>• Cấm sử dụng <strong>thuốc kích thích (Dopping)</strong> hoặc chất cấm</li>
                 </ul>
               </section>
 
@@ -805,7 +855,7 @@ const DoubleEliminationBracket = () => {
             
             <div className="sticky bottom-0 bg-gray-50 p-4 rounded-b-xl border-t">
               <button
-                onClick={() => setShowRulesModal(false)}
+                onClick={closeRulesModal}
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold"
               >
                 Đóng
