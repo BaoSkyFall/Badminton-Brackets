@@ -63,10 +63,11 @@ const DoubleEliminationBracket = () => {
       return true;
     }
     
-    // Step 3: LR1 completed, LR2 has empty slots
+    // Step 3: LR1 completed, LR2 has empty slots (allow advancement)
     if (losersBracket.round1.every(m => m.completed) && 
-        losersBracket.round2.some(m => !m.player1 || !m.player2)) {
-      return false; // This is handled automatically in step 2
+        losersBracket.round2.some(m => !m.player1 || !m.player2) &&
+        winnersBracket.semifinals.every(m => m.completed)) {
+      return true; // Allow advancing losers bracket when winners semifinals are done
     }
     
     // Step 4: LR2 completed, LR3 empty
