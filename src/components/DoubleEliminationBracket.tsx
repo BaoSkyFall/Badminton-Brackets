@@ -58,17 +58,18 @@ const DoubleEliminationBracket = () => {
       return true;
     }
     
-    // Step 2: Semifinals completed, finals empty
+    // Step 2: Semifinals completed, finals empty, and LR2 has players
     if (winnersBracket.semifinals.every(m => m.completed) && 
-        !winnersBracket.finals[0].player1 && !winnersBracket.finals[0].player2) {
+        !winnersBracket.finals[0].player1 && !winnersBracket.finals[0].player2 &&
+        losersBracket.round2.some(m => m.player1 && m.player2)) {
       return true;
     }
     
     // Step 3: LR1 completed, LR2 has empty slots (allow advancement)
     if (losersBracket.round1.every(m => m.completed) && 
         losersBracket.round2.some(m => !m.player1 || !m.player2) &&
-        winnersBracket.semifinals.every(m => m.completed)) {
-      return true; // Allow advancing losers bracket when winners semifinals are done
+        (winnersBracket.semifinals.every(m => m.completed) || winnersBracket.finals[0].completed)) {
+      return true; // Allow advancing losers bracket when winners semifinals or finals are done
     }
     
     // Step 4: LR2 completed, LR3 empty
@@ -206,6 +207,34 @@ const DoubleEliminationBracket = () => {
 
       // Losers from semifinals go to LR2
       const lr1Winners = losersBracket.round1.filter(m => m.winner).map(m => m.winner);
+      if (lr1Winners.length >= 2 && semifinalLosers.length >= 1) {
+        newLosersBracket.round2[0] = {
+          ...newLosersBracket.round2[0],
+          player1: lr1Winners[0],
+          player2: semifinalLosers[0],
+        };
+        if (semifinalLosers[1]) {
+          newLosersBracket.round2[1] = {
+            ...newLosersBracket.round2[1],
+            player1: lr1Winners[1],
+            player2: semifinalLosers[1],
+          };
+        }
+      }
+    }
+    
+    // Step 2b: Handle case when Winners Finals completed but LR2 setup was missed
+    else if (losersBracket.round1.every(m => m.completed) && 
+             losersBracket.round2.some(m => !m.player1 || !m.player2) &&
+             winnersBracket.finals[0].completed &&
+             winnersBracket.semifinals.every(m => m.completed)) {
+      
+      const lr1Winners = losersBracket.round1.filter(m => m.winner).map(m => m.winner);
+      const semifinalLosers = winnersBracket.semifinals
+        .filter(m => m.completed)
+        .map(m => m.player1 === m.winner ? m.player2 : m.player1);
+      
+      // Setup LR2 with LR1 winners and semifinal losers
       if (lr1Winners.length >= 2 && semifinalLosers.length >= 1) {
         newLosersBracket.round2[0] = {
           ...newLosersBracket.round2[0],
