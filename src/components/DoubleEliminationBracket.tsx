@@ -12,8 +12,7 @@ const DoubleEliminationBracket = () => {
       { id: 'W1-1', player1: '', player2: '', winner: '', completed: false },
       { id: 'W1-2', player1: '', player2: '', winner: '', completed: false },
       { id: 'W1-3', player1: '', player2: '', winner: '', completed: false },
-      { id: 'W1-4', player1: '', player2: '', winner: '', completed: false },
-      { id: 'W1-5', player1: '', player2: '', winner: '', completed: false }
+      { id: 'W1-4', player1: '', player2: '', winner: '', completed: false }
     ],
     semifinals: [
       { id: 'WS-1', player1: '', player2: '', winner: '', completed: false },
@@ -34,7 +33,11 @@ const DoubleEliminationBracket = () => {
       { id: 'L2-2', player1: '', player2: '', winner: '', completed: false }
     ],
     round3: [
-      { id: 'L3-1', player1: '', player2: '', winner: '', completed: false }
+      { id: 'L3-1', player1: '', player2: '', winner: '', completed: false },
+      { id: 'L3-2', player1: '', player2: '', winner: '', completed: false }
+    ],
+    round4: [
+      { id: 'L4-1', player1: '', player2: '', winner: '', completed: false }
     ],
     finals: [
       { id: 'LF', player1: '', player2: '', winner: '', completed: false }
@@ -79,7 +82,7 @@ const DoubleEliminationBracket = () => {
 
   // Kiểm tra xem có thể tiến vòng không
   const canAdvance = () => {
-    // Step 1: Round 1 completed, semifinals empty
+    // Step 1: Round 1 completed (4 matches), semifinals empty
     if (winnersBracket.round1.every(m => m.completed) && 
         winnersBracket.semifinals.every(m => !m.player1 && !m.player2)) {
       return true;
@@ -98,20 +101,27 @@ const DoubleEliminationBracket = () => {
       return true; // Allow advancing LR1 immediately for better UX
     }
     
-    // Step 4: LR2 completed, LR3 empty
+    // Step 4: LR2 completed, LR3 has space (considering lucky match may already be there)
     if (losersBracket.round2.every(m => m.completed) && 
-        !losersBracket.round3[0].player1 && !losersBracket.round3[0].player2) {
+        ((!losersBracket.round3[0].player1 && !losersBracket.round3[0].player2) ||
+         (!losersBracket.round3[1].player1 && !losersBracket.round3[1].player2))) {
       return true;
     }
     
-    // Step 5: LR3 completed and Winners Finals completed, Losers Finals empty
+    // Step 5: LR3 completed, LR4 empty
     if (losersBracket.round3.every(m => m.completed) && 
+        !losersBracket.round4[0].player1 && !losersBracket.round4[0].player2) {
+      return true;
+    }
+    
+    // Step 6: LR4 completed and Winners Finals completed, Losers Finals empty
+    if (losersBracket.round4.every(m => m.completed) && 
         winnersBracket.finals[0].completed &&
         !losersBracket.finals[0].player1 && !losersBracket.finals[0].player2) {
       return true;
     }
     
-    // Step 6: Both finals completed, Grand Finals empty
+    // Step 7: Both finals completed, Grand Finals empty
     if (winnersBracket.finals[0].completed && losersBracket.finals[0].completed &&
         !grandFinals[0].player1 && !grandFinals[0].player2) {
       return true;
@@ -123,10 +133,12 @@ const DoubleEliminationBracket = () => {
   const initializeBracket = () => {
     const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
     
-    // Setup Winners Bracket Round 1 - 5 trận cho 10 người
+    // Setup Winners Bracket Round 1 - Only 4 matches for 8 players
     const newWinnersBracket = { ...winnersBracket };
+    const newLosersBracket = { ...losersBracket };
     
-    for (let i = 0; i < 5; i++) {
+    // Setup 4 matches in Round 1 (8 players)
+    for (let i = 0; i < 4; i++) {
       newWinnersBracket.round1[i] = {
         ...newWinnersBracket.round1[i],
         player1: shuffledPlayers[i * 2],
@@ -136,7 +148,17 @@ const DoubleEliminationBracket = () => {
       };
     }
 
+    // Setup Lucky Match directly in LR3 with remaining 2 players
+    newLosersBracket.round3[0] = {
+      ...newLosersBracket.round3[0],
+      player1: shuffledPlayers[8], // 9th player
+      player2: shuffledPlayers[9], // 10th player
+      winner: '',
+      completed: false
+    };
+
     setWinnersBracket(newWinnersBracket);
+    setLosersBracket(newLosersBracket);
   };
 
   const updateMatch = (bracket: string, round: string, matchId: string, winner: string) => {
@@ -184,7 +206,7 @@ const DoubleEliminationBracket = () => {
         .map(m => m.player1 === m.winner ? m.player2 : m.player1)
         .filter(p => p);
 
-      // Advance winners to semifinals (5 người thắng -> 4 người vào bán kết, 1 bye)
+      // Advance winners to semifinals (4 người thắng -> 4 người vào bán kết)
       if (winners.length >= 4) {
         newWinnersBracket.semifinals[0] = {
           ...newWinnersBracket.semifinals[0],
@@ -198,7 +220,7 @@ const DoubleEliminationBracket = () => {
         };
       }
 
-      // Setup losers bracket với 5 người thua -> 4 người vào LR1
+      // Setup losers bracket với 4 người thua -> 4 người vào LR1
       if (losers.length >= 4) {
         newLosersBracket.round1[0] = {
           ...newLosersBracket.round1[0],
@@ -211,6 +233,8 @@ const DoubleEliminationBracket = () => {
           player2: losers[3],
         };
       }
+      
+      // Note: Lucky Match is already pre-populated in LR3 during tournament initialization
     }
     
     // Step 2: Semifinals -> Finals (Winners) và Round 2 (Losers)
@@ -301,9 +325,27 @@ const DoubleEliminationBracket = () => {
       }
     }
     
-    // Step 3: LR2 -> LR3
+    // Step 3: LR2 -> LR3 (LR3 now has 2 matches, one already has lucky match)
     else if (losersBracket.round2.every(m => m.completed) && 
-             !losersBracket.round3[0].player1 && !losersBracket.round3[0].player2) {
+             losersBracket.round3[0].player1 && losersBracket.round3[0].player2 && // Lucky match exists
+             !losersBracket.round3[1].player1 && !losersBracket.round3[1].player2) { // But LR3[1] is empty
+      
+      const lr2Winners = losersBracket.round2.filter(m => m.winner).map(m => m.winner);
+      
+      // LR3[0] already has lucky match, put LR2 winners in LR3[1]
+      if (lr2Winners.length >= 2) {
+        newLosersBracket.round3[1] = {
+          ...newLosersBracket.round3[1],
+          player1: lr2Winners[0],
+          player2: lr2Winners[1],
+        };
+      }
+    }
+    
+    // Step 3a: Standard LR2 -> LR3 (when no lucky match exists)
+    else if (losersBracket.round2.every(m => m.completed) && 
+             !losersBracket.round3[0].player1 && !losersBracket.round3[0].player2 &&
+             !losersBracket.round3[1].player1 && !losersBracket.round3[1].player2) {
       
       const lr2Winners = losersBracket.round2.filter(m => m.winner).map(m => m.winner);
       if (lr2Winners.length >= 2) {
@@ -315,25 +357,39 @@ const DoubleEliminationBracket = () => {
       }
     }
     
-    // Step 4: LR3 -> Losers Finals
+    // Step 4: LR3 -> LR4
     else if (losersBracket.round3.every(m => m.completed) && 
+             !losersBracket.round4[0].player1 && !losersBracket.round4[0].player2) {
+      
+      const lr3Winners = losersBracket.round3.filter(m => m.winner).map(m => m.winner);
+      if (lr3Winners.length >= 2) {
+        newLosersBracket.round4[0] = {
+          ...newLosersBracket.round4[0],
+          player1: lr3Winners[0],
+          player2: lr3Winners[1],
+        };
+      }
+    }
+    
+    // Step 5: LR4 -> Losers Finals
+    else if (losersBracket.round4.every(m => m.completed) && 
              !losersBracket.finals[0].player1 && !losersBracket.finals[0].player2) {
       
-      const lr3Winner = losersBracket.round3[0].winner;
+      const lr4Winner = losersBracket.round4[0].winner;
       const winnersFinalsLoser = winnersBracket.finals[0].completed ? 
         (winnersBracket.finals[0].player1 === winnersBracket.finals[0].winner ? 
          winnersBracket.finals[0].player2 : winnersBracket.finals[0].player1) : null;
       
-      if (lr3Winner && winnersFinalsLoser) {
+      if (lr4Winner && winnersFinalsLoser) {
         newLosersBracket.finals[0] = {
           ...newLosersBracket.finals[0],
-          player1: lr3Winner,
+          player1: lr4Winner,
           player2: winnersFinalsLoser,
         };
       }
     }
     
-    // Step 5: Setup Grand Finals
+    // Step 6: Setup Grand Finals
     else if (winnersBracket.finals[0].completed && losersBracket.finals[0].completed &&
              !grandFinals[0].player1 && !grandFinals[0].player2) {
       
@@ -360,8 +416,7 @@ const DoubleEliminationBracket = () => {
         { id: 'W1-1', player1: '', player2: '', winner: '', completed: false },
         { id: 'W1-2', player1: '', player2: '', winner: '', completed: false },
         { id: 'W1-3', player1: '', player2: '', winner: '', completed: false },
-        { id: 'W1-4', player1: '', player2: '', winner: '', completed: false },
-        { id: 'W1-5', player1: '', player2: '', winner: '', completed: false }
+        { id: 'W1-4', player1: '', player2: '', winner: '', completed: false }
       ],
       semifinals: [
         { id: 'WS-1', player1: '', player2: '', winner: '', completed: false },
@@ -382,7 +437,11 @@ const DoubleEliminationBracket = () => {
         { id: 'L2-2', player1: '', player2: '', winner: '', completed: false }
       ],
       round3: [
-        { id: 'L3-1', player1: '', player2: '', winner: '', completed: false }
+        { id: 'L3-1', player1: '', player2: '', winner: '', completed: false },
+        { id: 'L3-2', player1: '', player2: '', winner: '', completed: false }
+      ],
+      round4: [
+        { id: 'L4-1', player1: '', player2: '', winner: '', completed: false }
       ],
       finals: [
         { id: 'LF', player1: '', player2: '', winner: '', completed: false }
@@ -405,8 +464,14 @@ const DoubleEliminationBracket = () => {
       ? 'w-full max-w-44 sm:w-48' 
       : 'w-full max-w-52 sm:w-56';
     
+    // Check if this is a lucky match (LR3[0] pre-populated at tournament start)
+    const isLuckyMatch = bracket === 'losers' && round === 'round3' && match.id === 'L3-1' && 
+                        match.player1 && match.player2 && 
+                        // Lucky match is pre-populated, so check if LR2 hasn't started yet
+                        losersBracket.round2.every(m => !m.player1 || !m.player2);
+    
     return (
-      <div className={`${boxWidth} bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-xl border-2 border-[#0050fa]/20 overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300 hover:scale-105`}>
+      <div className={`${boxWidth} bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-xl border-2 ${isLuckyMatch ? 'border-yellow-400' : 'border-[#0050fa]/20'} overflow-hidden backdrop-blur-sm hover:shadow-2xl transition-all duration-300 hover:scale-105`}>
         {match.isBye ? (
           <div className="p-4 text-center">
             <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-full font-bold shadow-lg">
@@ -453,7 +518,9 @@ const DoubleEliminationBracket = () => {
             </div>
             
             <div className="text-center mt-2">
-              {match.completed ? (
+              {isLuckyMatch && !match.completed ? (
+                <span className="text-xs text-yellow-600 font-bold bg-yellow-100 px-2 py-1 rounded-full animate-pulse">🍀 LUCKY MATCH</span>
+              ) : match.completed ? (
                 <span className="text-xs text-green-600 font-bold bg-green-100 px-2 py-1 rounded-full">✓ HOÀN THÀNH</span>
               ) : match.player1 && match.player2 ? (
                 <span className="text-xs text-[#0050fa] font-bold bg-[#0050fa]/10 px-2 py-1 rounded-full animate-pulse">⚡ SẴN SÀNG</span>
@@ -670,10 +737,33 @@ const DoubleEliminationBracket = () => {
             {/* Losers Round 3 */}
             <div className="flex-1 flex flex-col">
               <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">LR3</h3>
+              <div className="flex flex-col lg:flex-1 lg:justify-center space-y-6 lg:space-y-12">
+                {losersBracket.round3.map((match, index) => {
+                  // Check if this is the lucky match (LR3[0] pre-populated at tournament start)
+                  const isLuckyMatchPosition = index === 0 && match.player1 && match.player2 && 
+                    losersBracket.round2.every(m => !m.player1 || !m.player2);
+                  
+                  return (
+                    <div key={match.id} className="flex flex-col items-center">
+                      {isLuckyMatchPosition && (
+                        <div className="text-xs text-yellow-600 font-bold bg-yellow-100 px-2 py-1 rounded-full mb-2 animate-pulse">
+                          🍀 LUCKY MATCH
+                        </div>
+                      )}
+                      <MatchBox match={match} bracket="losers" round="round3" size="small" />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Losers Round 4 */}
+            <div className="flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-bold text-gray-700 mb-3 md:mb-4 text-center">LR4</h3>
               <div className="flex flex-col lg:flex-1 lg:justify-center">
-                {losersBracket.round3.map((match) => (
+                {losersBracket.round4.map((match) => (
                   <div key={match.id} className="flex justify-center">
-                    <MatchBox match={match} bracket="losers" round="round3" />
+                    <MatchBox match={match} bracket="losers" round="round4" />
                   </div>
                 ))}
               </div>
@@ -767,19 +857,29 @@ const DoubleEliminationBracket = () => {
                   <div>
                     <h4 className="font-semibold text-green-700 mb-2">📈 Nhánh Thắng (Winners Bracket):</h4>
                     <ul className="space-y-1 ml-4">
-                      <li>• <strong>Vòng 1:</strong> 10 người → 5 trận → 5 người thắng</li>
-                      <li>• <strong>Bán kết:</strong> 5 người → 2 trận → 2 người thắng (1 người bye)</li>
+                      <li>• <strong>Vòng 1:</strong> 8 người → 4 trận → 4 người thắng</li>
+                      <li>• <strong>Bán kết:</strong> 4 người thắng → 2 trận → 2 người thắng</li>
                       <li>• <strong>Chung kết nhánh thắng:</strong> 2 người → 1 người vô địch nhánh</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-yellow-600 mb-2">🍀 Lucky Match (Trận May Mắn):</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• <strong>2 người còn lại:</strong> Xuất hiện ngay khi bắt đầu giải đấu và được vào vòng trong LR3</li>
+                      <li>• Người thắng Lucky Match sẽ tiếp tục thi đấu trong <strong>LR4</strong></li>
+                      <li>• Đây là cơ hội đặc biệt cho 2 người không tham gia vòng 1</li>
                     </ul>
                   </div>
                   
                   <div>
                     <h4 className="font-semibold text-red-700 mb-2">📉 Nhánh Thua (Losers Bracket):</h4>
                     <ul className="space-y-1 ml-4">
-                      <li>• <strong>Vòng LR1:</strong> 5 người thua vòng 1 nhánh thắng → 2 trận → 2 người thắng</li>
+                      <li>• <strong>Vòng LR1:</strong> 4 người thua vòng 1 → 2 trận → 2 người thắng</li>
                       <li>• <strong>Vòng LR2:</strong> 2 người thắng LR1 + 2 người thua bán kết → 2 trận → 2 người thắng</li>
-                      <li>• <strong>Vòng LR3:</strong> 2 người thắng LR2 → 1 trận → 1 người thắng</li>
-                      <li>• <strong>Chung kết nhánh thua:</strong> 1 người thắng LR3 + 1 người thua chung kết nhánh thắng → 1 người vô địch nhánh</li>
+                      <li>• <strong>Vòng LR3:</strong> Lucky Match + 2 người thắng LR2 → 2 trận → 2 người thắng</li>
+                      <li>• <strong>Vòng LR4:</strong> 2 người thắng LR3 → 1 trận → 1 người thắng</li>
+                      <li>• <strong>Chung kết nhánh thua:</strong> 1 người thắng LR4 + 1 người thua chung kết nhánh thắng → 1 người vô địch nhánh</li>
                     </ul>
                   </div>
                 </div>
